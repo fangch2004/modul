@@ -1,1 +1,1 @@
-# modul
+# Modulverwaltung TU Freiberg
