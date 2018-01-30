@@ -1,6 +1,7 @@
 <?php
-require_once("dbConnect.php");
 session_start();
+require_once("dbConnect.php");
+
 
 class AddCourse extends DbConnection
 {

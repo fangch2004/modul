@@ -1,3 +1,5 @@
+<?php
+session_start(); ?>
 <html>
 	<head>
 
@@ -60,14 +62,20 @@
 
 
 		<div class="well">
-		<h5>Neue Module Anmelden</h5>
+			<?php 
+	
+ 
+	echo " Sie sind jetzt angemeldet als ";
+	echo  "Student ID " .$_SESSION['CurrentID']. "<br>"	;
+	
+	?>
 		</div>
 
 
 
 
 						<div class="well">
-						<h3>Von Liste Auswählen </h3>
+						<h3>Bitte ankreuzen und Button klicken </h3>
 						</div>
 
 								<div class="jumbotron" >
@@ -75,19 +83,22 @@
 								<table class="table table-hover" style="font-size:18px;">
 									<thead>
 										<tr>
-											<th><b>Course ID</b></th>
-											<th><b>Course Name</b></th>
+											<th><b>Modul ID</b></th>
+											<th><b>Modul Name</b></th>
 										</tr>
 									</thead>
 
 									<tbody>
 										<tr>
 											<!--Php code for Database Retrieval -->
-										<form action="addcourse.php">
+										<form action="EnrollCourse.php"  method="post">
+											
+								<input type="submit" value="Anmelden" name="buton" style="width:30%;" onclick="return confirm('Wollen Sie sich daran anmelden ?');">
+							</div>
 									<?php
-									include("addcourse_class.php");
+									include_once("dbConnect.php");
 									
-									class refactored extends Addcourse {
+									class refactored extends DbConnection {
 										
 								
 									function callData()
@@ -96,29 +107,60 @@
 									
 										$sql = "SELECT * FROM courses";
 										$result = mysqli_query($this->con,$sql);
+										
 									while($row = mysqli_fetch_array($result))
 									{
-									echo "<td>    <input type='checkbox' name='Course[]'  value='". $row['COURSE_ID']."'> "  .$_SESSION ['F_COURSE_ID']= $row['COURSE_ID']."<br>";
-									echo "<td>".$_SESSION ['F_COURSE_NAME'] = $row['COURSE_NAME']."<br>"; echo "<tr>";
+									echo "<td>    <input type='checkbox' name='Course[]'  value='". $row['COURSE_ID']."'> "  .$row['COURSE_ID']."<br>";
+									echo "<td>".$row['COURSE_NAME']."<br>"; echo "<tr>";
 									
 									};
 									
+									}
+									function addData(){
+									//	 print_r($_POST);
+                                     // 	 print_r($_REQUEST);
+							     	$wert= $_SESSION['CurrentID'];
+											
+						    		 if(isset($_POST["buton"]))
+    {
+	 //   $value1=$_POST["buton"];
+	//	  echo "value of button submit is  $value1";	
+										 if(isset($_POST['Course']))  // 10087 should be a variable
+										 {	//	   $SQL2 = "INSERT INTO sc_relation  VALUES (2017,10090)";
+											$checkbox1=$_POST['Course'];  
+											 $chk="";  
+                                            foreach($checkbox1 as $chk1)  
+                                               {  
+												    $chk = $chk1;  
+											        $SQL2= "INSERT INTO sc_relation VALUES ($wert, $chk)";  
+                                                    $result2 = mysqli_query($this->con,$SQL2);
+                                                 }  
+											// echo "$chk" ;
+										//	 echo "<div style ='font:11px/21px Arial,tahoma,sans-serif;color:#ff0000'> Movie List for $key 2013</div>";
+										 echo " <div style ='font:15px/25px Arial,tahoma,sans-serif;color:#ff0000'> Sie sind jetzt angemeldet in den angekreuzten Modulen, bitte zurueck zum Menueauswahl  </div>";// Neue Module werden hinzugefueget.
+                                    //         $SQL2= "INSERT INTO sc_relation VALUES ($wert, $checkbox1)";  
+                                     //        $result2 = mysqli_query($this->con,$SQL2);
+										 }
+		                                  if(!$result2)				 
+										  {	throw new exception ('insert failed');
+										  
+										  }
+                                          
+                                                 }
 									}
 									
 									}
 									
 									$object1 = new refactored();
 									$object1->callData();
-								
-									session_destroy();
+                                    $object1->addData();
+					     		//	session_destroy();
 									?>
 										
 										</tr>
 								
 								</table>
-								<div class="form-group">
-								<input type="submit" class="btn btn-success" value="Submit" style="width:30%;" onclick="return confirm('Are you sure you want to add Courses ?');">
-							</div>
+								
 								
 											</form>
 								</div>

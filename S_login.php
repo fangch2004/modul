@@ -1,7 +1,8 @@
 <?php
-require('dbConnect.php');
+session_start();
+require_once('dbConnect.php');
 class S_login extends DbConnection {
-protected $LoginId;
+public $LoginId;
 protected $LoginPassword;
 protected $Logid;
 protected $Logpwd;
@@ -30,7 +31,7 @@ while($row = mysqli_fetch_array($result))
 	echo $this->Logid."<br>";
 }
 if ($this->LoginId == $this->Logid &&  $this->LoginPassword == $this->Logpwd){
-			header("Location:Student_Module.html");
+		//	header("Location:Student_Module.html");
 	}
 	else { 
 	
@@ -38,6 +39,10 @@ echo" Please Enter Valid ID and Password <br> "."<a href=login.html>Click here <
 	}
 }
 }
+
 $login = new S_login();
 $login->callData();
+$_SESSION['CurrentID']=$login->LoginId;
+header("Location:Student_Module.html");
+
 ?>
